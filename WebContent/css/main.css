@@ -1,0 +1,217 @@
+@CHARSET "UTF-8";
+
+
+
+/* 
+
+li {
+	list-style-type: none;
+}
+.active{
+	background-color: #505050;
+}
+#header .navbar-inverse {
+	border: none
+}
+
+#header .navbar-inner {
+	background-color: #4a8bc2;
+	height: 60px;
+	width: 100%;
+}
+
+#header .sidebar-toggle-box {
+	background: #427dae;
+	float: left;
+	height: 60px;
+	margin-left: -20px;
+	margin-right: 15px;
+	padding: 0 15px;
+}
+
+#header .fa-bars {
+	font-size: 25px;
+	color: #fff;
+	line-height: 60px;
+}
+
+#header .brand {
+	font-size: 20px;
+	line-height: 60px;
+	color: #fff;
+	font-weight: 600;
+}
+
+#container {
+ 	padding-top: 60px; 
+	height: 100%;
+    width: 100%;
+}
+.paddingoverflow{
+	padding-bottom: 65px;
+}
+#sidebar {
+	width: 180px;
+	height: 100%;
+	background: #404040;
+	position: fixed;
+	z-index: 1;
+}
+
+#sidebar li {
+	line-height: 50px;
+	border-bottom: 1px solid rgba(84, 84, 84, .17);
+}
+
+#sidebar li>a {
+	color: #fff;
+}
+
+#sidebar .img-icon {
+	padding: 0 15px 0 15px;
+}
+
+#sidebar li span {
+	display: block;
+	line-height: 50px;
+	width: 180px;
+}
+
+#sidebar li:hover {
+	background-color: #505050;
+}
+
+#main_content {
+	margin-left: 180px;
+	height: 100%;
+	padding: 3px;
+	background: #fff;
+	z-index: 999;
+}
+ */
+ .flexMainContainer_Col {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	width: 100%;
+	overflow:hidden;
+}
+
+.flexMainContainer_Row {
+	position: fixed;
+	display: flex;
+	flex-direction: Row;
+	height: 100%;
+	width: 100%;
+	overflow:hidden;
+}
+
+.flexInnerContainer_Col {
+	display: flex;
+	flex-direction: column;
+}
+
+.flexInnerContainer_Row {
+	display: flex;
+	flex-direction: row;
+}
+
+.flexExpanding {
+	flex: 1;
+	justify-content: space-around;
+}
+
+.flexExpanding_Wider {
+	flex: 2;
+	justify-content: space-around;
+}
+
+.flexContent {
+	position: fixed;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	width: 100%;
+	justify-content: space-around;
+} 
+.title{
+	text-align: right;
+	word-break:keep-all;          
+    white-space:nowrap; 
+	overflow:hidden;
+	padding-right:5px;
+	margin-bottom:0;
+	vertical-align: middle;
+	line-height:25px;
+} 
+.need-space {
+    margin: 5px 0;
+}
+.need-space .showText{
+	border: none;
+}
+.need-space label{
+	font-size: 9px;
+	line-height: 28px;
+	height: 28px;
+}
+.need-space .col-sm-4{
+	padding-left: 0px !important;
+}
+.need-space input{
+	padding:0px 15px;
+	line-height: 28px;
+	height: 28px;
+	border-radius:0px;	
+}
+.need-space select {
+	padding:0px 15px;
+	line-height: 28px;
+	height: 28px;	
+}
+.table-bordered {
+	border: 1px solid #ddd !important;
+}
+/* 汇总table */
+   .fixed-table-box{
+            width: 100%;
+            margin: 50px auto;
+        }
+        .fixed-table-box>.fixed-table_body-wraper{/*内容了表格主体内容有纵向滚动条*/
+            max-height: 610px;
+        }
+        
+        .fixed-table_fixed>.fixed-table_body-wraper{/*为了让两侧固定列能够同步表格主体内容滚动*/
+            max-height: 586px;
+        }
+
+        .w-150{
+            width: 300px;
+        }
+        .w-120{
+            width: 120px;
+        }
+        .w-300{
+            width: 300px;
+        }
+        .w-100{
+            width: 100px;
+        }
+.tb-head td{
+	border-right: none !important;
+}
+.tb-head td:last-child{
+	border-left: 1px !important;
+}
+.tb-title{
+	border-right: none !important;
+}
+.tb-suojin{
+	padding-left:40px !important;
+}
+.table-cell img{
+	padding-left: 10px;
+	width: 22px;
+	height: 6px;
+	margin-top: -2px;
+}

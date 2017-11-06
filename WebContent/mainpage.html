@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>zhengxing</title>
+		<meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="css/bootstrap.css" />
+		<link rel="stylesheet" href="css/zx.main.css" />
+		<link rel="stylesheet" href="css/unicorn.grey.css" class="skin-color" />
+		<link href="css/ui.jqgrid.css" rel="stylesheet"/>
+        <link href="css/ui.jqgrid-bootstrap.css" rel="stylesheet" />
+        <link href="themes/default/jquery-ui-theme.css" rel="stylesheet" />
+		<link href="css/main.css" rel="stylesheet" />
+		<link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="css/fixed-table.css" />
+		<style>
+		.fixedTable h1{
+            text-align: center;
+            padding-top: 30px;
+        }
+        .fixed-table-box{/*当表格的宽度大于.fixed-table-box的宽度时才会有横向滚动条*/
+            width: 100%;
+            margin: 50px auto;
+        }
+        .fixedTable{
+            margin: 0 auto;
+            background-color: #ccc;
+        }
+        .fixed-table-box>.fixed-table_body-wraper{/*如果数据过多并且想表格有纵向滚动条时，必须给该元素设置一个高度*/
+            max-height: 260px;
+        }
+        
+        .fixed-table_fixed>.fixed-table_body-wraper{/*为了让两侧固定列能同步表格主体内容滚动*/
+            max-height: 240px;
+        }
+
+        .fixedTable .fixed-table_body-wraper{
+            width: 100%;
+        }
+
+        .w-150{
+            width: 150px;
+        }
+        .w-120{
+            width: 120px;
+        }
+        .w-300{
+            width: 300px;
+        }
+        .w-100{
+            width: 100px;
+        }
+		</style>
+	</head>
+	<body>
+		
+		
+		<div id="header">
+			<h1><a href="./mainpage.html">zhengxing</a></h1>		
+		</div>
+		<div id="user-nav">
+            <ul class="btn-group">
+                <li class="btn btn-inverse" ><a title="" href="#"><i class="fa fa-user" aria-hidden="true"></i> <span class="text">个人资料</span></a></li>
+                <li class="btn btn-inverse"><a title="" href="#"><i class="fa fa-cog" aria-hidden="true"></i> <span class="text">设置</span></a></li>
+                <li class="btn btn-inverse"><a title="" href="login.html"><i class="fa fa-chain-broken" aria-hidden="true"></i> <span class="text">注销</span></a></li>
+            </ul>
+        </div>
+            
+		<div id="sidebar">
+			<ul id="baobiao_sidebar">
+
+			</ul>
+		
+		</div>
+		
+		<div id="style-switcher">
+			<i class="icon-arrow-left icon-white"></i>
+			<span>Style:</span>
+			<a href="#grey" style="background-color: #555555;border-color: #aaaaaa;"></a>
+            <a href="#light-blue" style="background-color: #8399b0;"></a>
+			<a href="#blue" style="background-color: #2D2F57;"></a>
+			<a href="#red" style="background-color: #673232;"></a>
+            <a href="#red-green" style="background-image: url('img/demo/red-green.png');background-repeat: no-repeat;"></a>
+		</div>
+		
+		<div id="content">
+			<div id="content-header">
+				<h1></h1>
+			</div>
+			<div id="breadcrumb">
+				<a href="#" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> 主页</a>
+				<a href="#" class="current">发电量录入单据</a>
+			</div>
+			
+			<div class="container-fluid">
+<!-- 			<div id="main_content">
+			 		<table id="rowed"></table>
+			 		<div id="pager" ></div> 
+		        </div>  -->
+                <div id="fixedTable" class="fixedTable"></div>
+			</div>
+		</div>
+		
+
+<script src="js/scripts/jquery-1.11.3.min.js"></script>
+<script src="js/scripts/bootstrap.js"></script>
+<script src="js/scripts/FixedTable.js"></script>
+<script type="text/ecmascript" src="js/scripts/jquery.jqGrid.js"></script>
+<script type="text/ecmascript" src="js/scripts/grid.locale-cn.js"></script>
+<script src="js/scripts/jquery.ui.datepicker-zh-CN.js"></script>
+<script src="js/scripts/jquery-ui.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/mainpage.js"></script>	
+<script src="js/UI.js"></script>
+</body>
+</html>
