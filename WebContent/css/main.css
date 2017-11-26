@@ -1,94 +1,50 @@
 @CHARSET "UTF-8";
-
-
-
-/* 
-
-li {
-	list-style-type: none;
+.btn-info {
+    color: #fff;
+    text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
+    background-color: #49afcd;
+    background-image: -moz-linear-gradient(top,#5bc0de,#2f96b4);
+    background-image: -webkit-gradient(linear,0 0,0 100%,from(#5bc0de),to(#2f96b4));
+    background-image: -webkit-linear-gradient(top,#5bc0de,#2f96b4);
+    background-image: -o-linear-gradient(top,#5bc0de,#2f96b4);
+    background-image: linear-gradient(to bottom,#5bc0de,#2f96b4);
+    background-repeat: repeat-x;
+    border-color: #2f96b4 #2f96b4 #1f6377;
+    border-color: rgba(0,0,0,0.1) rgba(0,0,0,0.1) rgba(0,0,0,0.25);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff5bc0de',endColorstr='#ff2f96b4',GradientType=0);
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
 }
-.active{
-	background-color: #505050;
+.btn-inverse {
+    color: #fff;
+    text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
+    background-color: #363636;
+    background-image: -moz-linear-gradient(top,#444,#222);
+    background-image: -webkit-gradient(linear,0 0,0 100%,from(#444),to(#222));
+    background-image: -webkit-linear-gradient(top,#444,#222);
+    background-image: -o-linear-gradient(top,#444,#222);
+    background-image: linear-gradient(to bottom,#444,#222);
+    background-repeat: repeat-x;
+    border-color: #222 #222 #000;
+    border-color: rgba(0,0,0,0.1) rgba(0,0,0,0.1) rgba(0,0,0,0.25);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff444444',endColorstr='#ff222222',GradientType=0);
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
 }
-#header .navbar-inverse {
-	border: none
+.deleteStyle{
+	padding: 20px;
 }
-
-#header .navbar-inner {
-	background-color: #4a8bc2;
-	height: 60px;
-	width: 100%;
+ .ui-th-column, .ui-jqgrid .ui-jqgrid-htable th.ui-th-column{
+ 	padding: 10px 0 !important;
+ 	/* background-color: #efefef; */
+    /* background-image: -webkit-gradient(linear, 0 0%, 0 100%, from(#fdfdfd), to(#eaeaea)); */
+    background-image: -webkit-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
+    background-image: -moz-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
+    background-image: -ms-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
+    background-image: -o-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
+    background-image: -linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fdfdfd', endColorstr='#eaeaea',GradientType=0 );
+    border-bottom: 1px solid #CDCDCD;
+    height: 36px;
 }
-
-#header .sidebar-toggle-box {
-	background: #427dae;
-	float: left;
-	height: 60px;
-	margin-left: -20px;
-	margin-right: 15px;
-	padding: 0 15px;
-}
-
-#header .fa-bars {
-	font-size: 25px;
-	color: #fff;
-	line-height: 60px;
-}
-
-#header .brand {
-	font-size: 20px;
-	line-height: 60px;
-	color: #fff;
-	font-weight: 600;
-}
-
-#container {
- 	padding-top: 60px; 
-	height: 100%;
-    width: 100%;
-}
-.paddingoverflow{
-	padding-bottom: 65px;
-}
-#sidebar {
-	width: 180px;
-	height: 100%;
-	background: #404040;
-	position: fixed;
-	z-index: 1;
-}
-
-#sidebar li {
-	line-height: 50px;
-	border-bottom: 1px solid rgba(84, 84, 84, .17);
-}
-
-#sidebar li>a {
-	color: #fff;
-}
-
-#sidebar .img-icon {
-	padding: 0 15px 0 15px;
-}
-
-#sidebar li span {
-	display: block;
-	line-height: 50px;
-	width: 180px;
-}
-
-#sidebar li:hover {
-	background-color: #505050;
-}
-
-#main_content {
-	margin-left: 180px;
-	height: 100%;
-	padding: 3px;
-	background: #fff;
-	z-index: 999;
-}
- */
  .flexMainContainer_Col {
 	display: flex;
 	flex-direction: column;
@@ -173,20 +129,31 @@ li {
 	border: 1px solid #ddd !important;
 }
 /* 汇总table */
-   .fixed-table-box{
-            width: 100%;
-            margin: 50px auto;
+		.fixedTable{
+		    width: 1010px;
+			margin-top: 15px;
+		}
+		.fixedTable h1{
+            text-align: center;
+            padding-top: 30px;
         }
-        .fixed-table-box>.fixed-table_body-wraper{/*内容了表格主体内容有纵向滚动条*/
-            max-height: 610px;
+        .fixed-table-box{/*当表格的宽度大于.fixed-table-box的宽度时才会有横向滚动条*/
+          	width: 1010px;
+        }
+        .fixed-table-box>.fixed-table_body-wraper{/*如果数据过多并且想表格有纵向滚动条时，必须给该元素设置一个高度*/
+            max-height: 510px;
         }
         
-        .fixed-table_fixed>.fixed-table_body-wraper{/*为了让两侧固定列能够同步表格主体内容滚动*/
-            max-height: 586px;
+        .fixed-table_fixed>.fixed-table_body-wraper{/*为了让两侧固定列能同步表格主体内容滚动*/
+            max-height: 480px;
         }
 
+        .fixedTable .fixed-table_body-wraper{
+            width: 100%;
+        } 
+
         .w-150{
-            width: 300px;
+/*             width: 150px; */
         }
         .w-120{
             width: 120px;
@@ -214,4 +181,31 @@ li {
 	width: 22px;
 	height: 6px;
 	margin-top: -2px;
+}
+.fixed-table_header .table-cell img{
+	padding-left: 3px;
+	width: 18px;
+	height: 13px;
+	margin-top: -2px;
+}
+thead tr th{
+	text-align: center !important;
+}
+.w-300{
+	text-align: left !important;
+}
+.w-100{
+	font-weight: 600;
+}
+
+/* 电站月度经营总汇 */
+#dianzhanTable input{
+	border: 0px;
+	width: 100%;
+}
+.container-fluid{
+	overflow: scroll;
+}
+.childrow{
+	padding-left:25px !important;
 }

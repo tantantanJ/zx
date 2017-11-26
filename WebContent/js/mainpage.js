@@ -19,18 +19,32 @@ var kehuguanxiObj = {
 }
 $(function(){
 	//页面加载完成之后执行
-    //初始化FixedTable
-//    $(".fixed-table-box").fixedTable();
+	
+	$.ajax({
+		type: 'GET',
+		url: 'servlet/GetWuliao',
+		dataType: 'json',
+		success: function(data){
+			console.log(data.rows);
+			for(var i=0;i<data.rows.length;i++){
+			}
+		}
+	})
+	
 	id = GetQueryString("id");
 	console.log(id);
 	showWhichSidebar(id);
 	if(id === 'yonghu'){
 		$('#content-header h1').html('发电量录入单据');
 		$('.current').text('发电量录入单据');
+		$('#fixedTable').hide();
+		$('#main_content').show();
 		FaDianLiangLuRu();
 	}else{
 		$('#content-header h1').html('集团月度总汇');
 		$('.current').text('集团月度总汇表');
+		$('#main_content').hide();
+		$('#fixedTable').show();
 		jituanyuedubaobiao();
 	}
 	flexingGrid(gridId);
@@ -41,18 +55,17 @@ function FaDianLiangLuRu(){
 	$('#main_content').empty().html('<table id="rowed"></table>'+'<div id="pager" ></div>');
 	jQuery("#rowed").jqGrid(
 			{
-				url : 'data/fadianliangluru.json',//组件创建完成之后请求数据的url
+				url : 'servlet/GetTable',//组件创建完成之后请求数据的url
 				styleUI : 'Bootstrap',
 				datatype : "json",//请求数据返回的类型。可选json,xml,txt
 				colModel : [ //jqGrid每一列的配置信息。包括名字，索引，宽度,对齐方式.....
-				             {label:'业务单元（公司）', name : 'yewudanyuan',width : 160,align:'center',}, 
 				             {label:'单据编号', name : 'danjubianhao',width : 90,align : "center"}, 
-				             {label:'生产部门', name : 'shengchanbumen',width : 100,align:'center'}, 
-				             {label:'日期', name : 'riqi',width : 100,sorttype : "date",align : "center"}, 
-				             {label:'录入人', name : 'lururen',width : 80,align:'center'}, 
+				             {label:'生产部门', name : 'departmentname',width : 100,align:'center'}, 
+				             {label:'日期', name : 'create_time',width : 100,sorttype : "date",align : "center"}, 
+				             {label:'录入人', name : 'personname',width : 80,align:'center'}, 
 				             {label:'物料编码', name : 'wuliaobianma',width : 80,align : "center",}, 
 				             {label:'物料名称', name : 'wuliaomingcheng',width : 150,align : "center"},
-				             {label:'发电量（万度）', name : 'fadianliang',width : 80,align : "right"} ,
+				             {label:'发电量（万度）', name : 'fadianliang',width : 80,align : "right",formatter:'integer', formatoptions:{thousandsSeparator: ','}} ,
 				             {label:'单价', name : 'danjia',width : 80,align : "right",formatter:'currency'} ,
 				             {label:'金额', name : 'jine',width : 80,align : "right",formatter:'currency'},
 				             {label:'公司标识', name : 'gongsibiaoshi',width : 80,align : "right",hidden: "true"} ,
@@ -87,7 +100,6 @@ function FaDianLiangLuRu(){
 		id: gridId + '_newFaDianLiangDanJu', buttonicon :'fa fa-plus',
 		onClickButton:function(){
 			manipulateGongCheng('新增','FaDianLiangLuRu');
-			
 		} 
 	});
 	jQuery("#rowed").jqGrid('navButtonAdd', "#pager", {caption:'修改',title:'修改选中项。', 
@@ -100,6 +112,12 @@ function FaDianLiangLuRu(){
 		id: gridId + '_delFaDianLiangDanJu', buttonicon :'fa fa-trash',
 		onClickButton:function(){
 			manipulateGongCheng('删除','FaDianLiangLuRu');
+		} 
+	});
+	jQuery("#rowed").jqGrid('navButtonAdd', "#pager", {caption:'分组查询',title:'分组查询。', 
+		id: gridId + '_serFaDianLiangDanJu', buttonicon :'fa fa-search',
+		onClickButton:function(){
+			manipulateGongCheng('查询','FaDianLiangLuRu');
 		} 
 	});
 	$('#gbox_rowed').addClass('paddingoverflow');
@@ -115,7 +133,6 @@ function JieSuanDianLiangLuRu(){
 				styleUI : 'Bootstrap',
 				datatype : "json",//请求数据返回的类型。可选json,xml,txt
 				colModel : [ //jqGrid每一列的配置信息。包括名字，索引，宽度,对齐方式.....
-				             {label:'业务单元（公司）', name : 'yewudanyuan',width : 160,align:'center',}, 
 				             {label:'单据编号', name : 'danjubianhao',width : 90,align : "center"}, 
 				             {label:'部门', name : 'shengchanbumen',width : 100,align:'center'}, 
 				             {label:'日期', name : 'riqi',width : 100,sorttype : "date",align : "center"}, 
@@ -173,6 +190,12 @@ function JieSuanDianLiangLuRu(){
 		id: gridId + '_delFaDianLiangDanJu', buttonicon :'fa fa-trash',
 		onClickButton:function(){
 			manipulateGongCheng('删除','JieSuanDianLiangLuRu');
+		} 
+	});
+	jQuery("#rowed").jqGrid('navButtonAdd', "#pager", {caption:'分组查询',title:'分组查询。', 
+		id: gridId + '_serlFaDianLiangDanJu', buttonicon :'fa fa-search',
+		onClickButton:function(){
+			manipulateGongCheng('查询','JieSuanDianLiangLuRu');
 		} 
 	});
 	$('#gbox_rowed').addClass('paddingoverflow');
@@ -241,6 +264,12 @@ function DianLiangChanXiaoCunLuRu(){
 			manipulateGongCheng('删除');
 		} 
 	});
+	jQuery("#rowed").jqGrid('navButtonAdd', "#pager", {caption:'分组查询',title:'分组查询。', 
+		id: gridId + '_delFaDianLiangDanJu', buttonicon :'fa fa-search',
+		onClickButton:function(){
+			manipulateGongCheng('查询');
+		} 
+	});
 	$('#gbox_rowed').addClass('paddingoverflow');
 	flexingGrid(gridId);
 }
@@ -253,9 +282,17 @@ function flexingGrid(gridId) {
 function manipulateGongCheng(strAction,strTableType){
 	var templatePage = '';
 	if(strTableType == "FaDianLiangLuRu"){
-		templatePage = 'templates/fadianliangluru.html';
+		if(strAction === '新增'||strAction === '编辑'){
+			templatePage = 'templates/fadianliangluru.html';
+		} else if(strAction === '查询'){
+			templatePage = 'templates/fadianliangchaxun.html';
+		}
 	}else if(strTableType == "JieSuanDianLiangLuRu"){
-		templatePage = 'templates/jiesuandianliangluru.html';
+		if(strAction === '新增'||strAction === '编辑'){
+			templatePage = 'templates/jiesuandianliangluru.html';
+		} else if(strAction == '查询'){
+			templatePage = 'templates/jiesuandianliangchaxun.html';
+		}
 	}
 	if (strAction === '新增') {
 		newProject(strTableType,templatePage);
@@ -263,6 +300,8 @@ function manipulateGongCheng(strAction,strTableType){
 		editProject(strTableType,templatePage);
 	} else if (strAction === '删除') {
 		deleteProject(strTableType);
+	} else if (strAction === '查询') {
+		searchProject(strTableType,templatePage);
 	} 
 	function newProject(strTableType,templatePage){
 		var newProjectDialog = document.createElement('div');
@@ -271,6 +310,7 @@ function manipulateGongCheng(strAction,strTableType){
 			$(newProjectDialog).dialog({
 				title: '新增单据',
 				width: 710,
+				modal : true,
 				position: { my: "center", at: "center", of: window },
 				buttons: {
 			 		"确定" :	function() {
@@ -289,8 +329,8 @@ function manipulateGongCheng(strAction,strTableType){
 			$(newProjectDialog).dialog({
 				position: { my: "center", at: "center", of: window },
 			});
-		
 			if(strTableType == "FaDianLiangLuRu"){
+				console.log('321');
 				$("#DanJia").bind('keyup',jineCountFadianlianglurudan);
 				$("#FaDianLiang").bind('keyup',jineCountFadianlianglurudan);
 			}else if(strTableType == "JieSuanDianLiangLuRu"){
@@ -315,12 +355,13 @@ function manipulateGongCheng(strAction,strTableType){
 			fillElementsWithData(theData,editDialog);
 			$(editDialog).dialog({
 				title: '修改单据',
+				modal : true,
 				width: 710,
 				position: { my: "center", at: "center", of: window },
 				buttons: {
 					"确定" :	function() {
 						editRowData(editDialog,selectedId);
-//						同时拿到最新的页面数据写入后台
+//！！！！						同时拿到最新的页面数据写入后台
 						closeDialog(this);
 					},
 					"退出" : function() {
@@ -348,11 +389,12 @@ function manipulateGongCheng(strAction,strTableType){
 		$(deleteDialog).dialog({
 			title: '删除单据',
 			width: 710,
+			modal : true,
 			position: { my: "center", at: "center", of: window },
 			buttons: {
 				"确定" :	function() {
 					deleteRowData(deleteDialog,selectedId);
-//					同时拿到最新的页面数据写入后台
+//！！！！					同时拿到最新的页面数据写入后台
 					closeDialog(this);
 				},
 				"取消" : function() {
@@ -363,7 +405,35 @@ function manipulateGongCheng(strAction,strTableType){
 		$(deleteDialog).dialog({
 			position: { my: "center", at: "center", of: window },
 		});
-		deleteDialog.className='dialog-body';
+		deleteDialog.className='deleteStyle dialog-body';
+	}
+	function searchProject(strTableType,templatePage){
+		var newProjectDialog = document.createElement('div');
+		console.log(templatePage);
+		$.get(templatePage, function(data){
+			newProjectDialog.innerHTML = data;
+			console.log(newProjectDialog);
+			$(newProjectDialog).dialog({
+				title: '查询',
+				width: 710,
+				modal : true,
+				position: { my: "center", at: "center", of: window },
+				buttons: {
+			 		"查询" :	function() {
+//！！！！			 		将查询的选项传入后台，更新数据	
+			 		},
+					"退出" : function() {
+						closeDialog(this);
+					}
+				}
+			}); 
+			$(".date-picker-elem").datepicker();
+			
+			$(newProjectDialog).dialog({
+				position: { my: "center", at: "center", of: window },
+			});
+		},'text');
+		newProjectDialog.className='dialog-body';
 	}
 }
 function closeDialog(theDialogElem) {
@@ -384,13 +454,13 @@ function showWhichSidebar(id){
 		htmlStr +="<li id='fadianliang_col' class='sidebar-col'><a href='javascript: void sidebarChecked(\"发电\");'><i class='img-icon fa fa-book'></i>发电量录入单据</a></li>"
 		htmlStr +="<li id='jiesuandianliang_col' class='sidebar-col'><a href='javascript: void sidebarChecked(\"结算\");'><i class='img-icon fa fa-book'></i><span>结算电量单据</span></a></li>"
 		htmlStr +="<li id='jiecundianliang_col' class='sidebar-col'><a href='javascript: void sidebarChecked(\"结存\");'><i class='img-icon fa fa-book'></i><span>结存电量处理</span></a></li>" 
+		htmlStr +="<li id='dianzhanzonghui_col' class='sidebar-col'><a href='javascript: void sidebarChecked(\"电站总汇\");'><i class='img-icon fa fa-book'></i><span>电站月度经营汇总</span></a></li>"
 		$("#baobiao_sidebar").html(htmlStr);
 		$('#fadianliang_col').addClass('active');
 	}else{
-		htmlStr +="<li id='dianzhanzonghui_col' class='sidebar-col'><a href='javascript: void sidebarChecked(\"电站总汇\");'><i class='img-icon fa fa-book'></i><span>电站月度经营汇总</span></a></li>"
 		htmlStr +="<li id='jituanzonghui_col' class='sidebar-col'><a href='javascript: void sidebarChecked(\"集团总汇\");'><i class='img-icon fa fa-book'></i><span>集团月度经营汇总</span></a></li>"
 		$("#baobiao_sidebar").html(htmlStr);
-		$('#dianzhanzonghui_col').addClass('active');
+		$('#jituanzonghui_col').addClass('active');
 	}
 }
 
@@ -400,29 +470,40 @@ function sidebarChecked(strAction){
 		$('#fadianliang_col').addClass('active');
 		$('#content-header h1').html('发电量录入单据');
 		$('.current').text('发电量录入单据');
+		$('#fixedTable').hide();
+		$('#main_content').show();
 		FaDianLiangLuRu();
 	}else if(strAction == '结算'){
 		$('.sidebar-col').removeClass('active');
 		$('#jiesuandianliang_col').addClass('active');
 		$('#content-header h1').html('结算电量录入单据');
 		$('.current').text('结算电量录入单据');
+		$('#fixedTable').hide();
+		$('#main_content').show();
 		JieSuanDianLiangLuRu();
 	}else if(strAction == '结存'){
 		$('.sidebar-col').removeClass('active');
 		$('#jiecundianliang_col').addClass('active');
 		$('#content-header h1').html('结存电量录入单据');
 		$('.current').text('结存电量录入单据');
+		$('#fixedTable').hide();
+		$('#main_content').show();
 		DianLiangChanXiaoCunLuRu();
 	}else if(strAction == '电站总汇'){
 		$('.sidebar-col').removeClass('active');
 		$('#dianzhanzonghui_col').addClass('active');
 		$('#content-header h1').html('电站月度总汇');
 		$('.current').text('电站月度总汇表');
+		$('#main_content').hide();
+		$('#fixedTable').show();
+		$('#fixedTable').empty();
+		dianzhanyuedujingying();
 	}else if(strAction == '集团总汇'){
 		$('.sidebar-col').removeClass('active');
 		$('#jituanzonghui_col').addClass('active');
 		$('#content-header h1').html('集团月度总汇');
 		$('.current').text('集团月度总汇表');
+		$('#fixedTable').empty();
 		jituanyuedubaobiao();
 	}
 }
@@ -449,11 +530,13 @@ function deleteRowData(deleteDialog,selectedId){
 }
 /*计算行*/
 function jineCountFadianlianglurudan(){
+	console.log('123');
 	var fadianliangNum = $('#FaDianLiang').val();
 	var danjiaNum = currencyUnformat($('#DanJia').val());
 	if(!fadianliangNum) fadianliangNum = [];
 	if(!danjiaNum) danjiaNum = [];
 	var jineNum = fadianliangNum*danjiaNum;
+	$('.isLabelShow').show();
 	$('#JinE').val(currencyFormatted(jineNum,true,''));
 }
 function jineCountJiesuandianlianglurudan(){
@@ -479,14 +562,27 @@ function jituanyuedubaobiao(){
 		 var zhanweiObjLast = {};
 		 zhanweiObjFirst.width = "300px";
 		 zhanweiObjFirst.fixed = true;
-		 zhanweiObjFirst.field = '';
+		 zhanweiObjFirst.field = "项目<img src='images/arrow-doubledown.png'/>";
 		 zhanweiObjLast.width = "100px";
 		 zhanweiObjLast.fixed = true;
 		 zhanweiObjLast.field = '合计';
 		 zhanweiObjLast.fixedDirection = "right";
 		 for(var i=0;i<baobiaoRows.length;i++){
 			     var gongshimingObj = {};
-			     gongshimingObj.width = "150px";
+                 /*此处应考虑取到公司数为零的情况*/
+			     if(baobiaoRows.length===1){
+			    	 gongshimingObj.width = "600px";
+			    	 $('.w-150').css('width','600px');
+			     } else if(baobiaoRows.length===2){
+			    	 gongshimingObj.width = "300px";
+			    	 $('.w-150').css('width','300px');
+			     } else if(baobiaoRows.length===3){
+			    	 gongshimingObj.width = "200px";
+			    	 $('.w-150').css('width','200px');
+			     } else {
+			      	 gongshimingObj.width = "150px";
+			    	 $('.w-150').css('width','150px');
+			     }
 			     gongshimingObj.field = baobiaoRows[i].gongsimingcheng;
 				 gongshimingJsonStr.push(gongshimingObj);
 		 }
@@ -537,7 +633,7 @@ function jituanyuedubaobiao(){
 	         });
 	         fixedTable.addRow(function (){
 	        	 var html = '';
-	        	 html += "<tr class='tb-suojin'><td class='w-300'><div class='table-cell tb-suojin'>2017年7月</div></td>";
+	        	 html += "<tr class='tb-suojin'><td class='w-300'><div class='table-cell tb-suojin'>2017年7月(KWH)</div></td>";
 	        	 for(var i=0;i<baobiaoRows.length;i++){
 	        		 html += "<td class='w-150'><div class='table-cell'>"+baobiaoRows[i].fadianliang.yuedu+"</div></td>";
 	        	 }
@@ -547,7 +643,7 @@ function jituanyuedubaobiao(){
 	         });
 	         fixedTable.addRow(function (){
 	        	 var html1 = '';
-	        	 html1 += "<tr><td class='w-300'><div class='table-cell tb-suojin'>2017年累计</div></td>";
+	        	 html1 += "<tr><td class='w-300'><div class='table-cell tb-suojin'>2017年累计(KWH)</div></td>";
 	        	 for(var i=0;i<baobiaoRows.length;i++){
 	        		 html1 += "<td class='w-150'><div class='table-cell'>"+baobiaoRows[i].fadianliang.niandu+"</div></td>";
 	        	 }
@@ -839,6 +935,11 @@ function jituanyuedubaobiao(){
 		 });
 
      });
-     
+}
 
+function dianzhanyuedujingying(){
+	$.get('templates/dianzhanyuedujingying.html',function(data){
+		console.log(data);
+		$('#fixedTable').html(data);
+	})
 }

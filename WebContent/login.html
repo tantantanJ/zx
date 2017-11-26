@@ -103,20 +103,22 @@
 <!-- Interactive Login - START -->
 <div class="container-fluid">
     <div class="row">
-        <div class="loginpanel">
-			<i id="loading" class="hidden fa fa-spinner fa-spin bigicon"></i>
-            <h2>
-				<span class="fa fa-quote-left "></span> 登录 <span class="fa fa-quote-right "></span>
-			</h2>
-            <div>
-                <input id="username" type="text" placeholder="登录账号" >
-                <input id="password" type="password" placeholder="输入密码" >
-
-				<div class="buttonwrapper">
-					<button id="loginbtn" class="fa fa-lock lockbutton redborder"></button>
-				</div>
-            </div>
-        </div>
+    	<form action="servlet/LoginServlet" method="post">
+	        <div class="loginpanel">
+				<i id="loading" class="hidden fa fa-spinner fa-spin bigicon"></i>
+	            <h2>
+					<span class="fa fa-quote-left "></span> 登录 <span class="fa fa-quote-right "></span>
+				</h2>
+	            <div>
+	                <input id="username" name="username" type="text" placeholder="登录账号" >
+	                <input id="password" name="password" type="password" placeholder="输入密码" >
+	
+					<div class="buttonwrapper">
+						<input type="submit" type="button" value="确认"/>
+					</div>
+	            </div>
+	        </div>
+        </form>
     </div>
 </div>
 
@@ -136,6 +138,6 @@
 </div>
 <script src="js/scripts/jquery.js"></script>
 <script src="js/scripts/bootstrap.js"></script>
-<script src="login.js"></script>
+<!-- <script src="login.js"></script> -->
 </body>
 </html>

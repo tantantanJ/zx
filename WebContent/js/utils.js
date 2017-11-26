@@ -61,6 +61,258 @@ function showDefaultVal(selectName,inputName,showName,dataObj){
 }
 
 /*
+ * 实际完成静态信息填充过程中ajax数据处理，并填入相关options的函数 前提： 控件必须是select类型的，能够接受option子元素。
+ * ajax返回数据只能使用本系统约定的text数据格式。 输入: 参数1, jquery OBject : ajax调用的返回数据 参数2， String :
+ * 需要填充信息的元素的ClassName 出口： 返回调用点，继续执行后续语句 返回： 正常：返回字符数组，为ajax调用的返回数据内容
+ * 异常：ajax调用错误或无数据时，返回空值。 其他: 无 改进： 暂无
+ * 
+ * @author Harry
+ * 
+ * @version 1.0 2013-12-28
+ * 
+ * Ver 1.1 简述: 1) 彻底修改了函数的参数系统： strData:
+ * 需填入option的参数，格式为系统约定的ajax返回文本格式，正常填入的数据应以OK~TRUE~开头; strSelector:
+ * 用于jquery操作的selector字符串; blnFillInOptGroupDftF:
+ * 填入OPTION时是否加入分组信息的控制开关，true,false blnBlankFirstDftU:
+ * 是否在options前面预留空选项的控制开关，true,false blnKeepPrevValDftT:
+ * 填入options时是否保留原值的控制开关，true,false blnHideWhenEmptyDftF:
+ * 如果传入的元素的options内容为空，是否隐藏该元素的控制开关，true,false 2) 取消了原来函数的返回值OPTIONS数组
+ * 
+ * @author Harry
+ * @version 1.1 2014-09-19
+ * 
+ * Ver 1.2 简述: 1） 增加参数： blnKeepOrgOptDftF: 布尔量，决定是否保留原来select的options，缺省为false;
+ * 2） 如果要保留原来的otion，则新增的options插入到原来options之前；
+ * 3）目的：完成两组不同数据来源的options拼接到一起，调用者来保证两组数据的不可重复性。
+ * 
+ * @author Harry
+ * @version 1.2 2014-12-21
+ * 
+ * Ver 1.3 简述： 1）修改原string类型参数 strSelector，为
+ * objFillInElems：该参数可以是jQuery()函数能接受的任何合法对象
+ * 
+ * @author: Harry
+ * @version 1.3: 2015-1-23
+ * 
+ * Ver 1.4 简述 1） 增加了检查填充前的原值与需要填充的值之间的重复关系：
+ * 如果两部分的val值相同，则删除原来的option，使用需要新填充的option作为有效option 2） 这样做可能存在的问题：
+ * 假设先填入了完整的正确options，再通过fillElementsWithData函数填入数据表的数值，如果不经检查，可能导致
+ * 原来正确的option的text被不正确的覆盖，同时可能丢失mytag信息。因此在fillElementsWithData函数中增加了
+ * 赋值val之前检查是否有同样val的option存在
+ */
+function processAndFillData(strData, objFillInElems, blnFillInOptGroupDftF,
+		blnBlankFirstDftU, blnKeepPrevValDftT, blnKeepOrgOptDftF,
+		blnHideWhenEmptyDftF) {
+
+	if (strData.indexOf('OK~FALSE') == -1 && strData.indexOf('OK~TRUE~') == -1
+			&& strData) {
+		strData = 'OK~TRUE~' + strData;
+	}
+
+	// 确定布尔参数的缺省值
+	// 填入options开关：缺省为false，除非传入参数明确赋值为true；
+	if (blnFillInOptGroupDftF === undefined)
+		blnFillInOptGroupDftF = false;
+	// 保留element原赋值开关：缺省为true，除非传入参数明确赋值为false；
+	if (blnKeepPrevValDftT === undefined)
+		blnKeepPrevValDftT = true;
+	if (blnKeepOrgOptDftF === undefined)
+		blnKeepOrgOptDftF = false;
+	// 如没有填入项，是否隐藏元素的开关：缺省为false，除非传入参数明确赋值为true；
+	if (blnHideWhenEmptyDftF === undefined)
+		blnHideWhenEmptyDftF = false;
+
+	var options = ajaxTextProcessing(strData); // 需要新填入的option数据
+	var selectElems = $(objFillInElems); // 所有满足条件的select元素
+	if (options == false || options == null) {
+		// 按照是否隐藏元素的开关，隐藏元素。
+		if (blnHideWhenEmptyDftF) {
+			for (var i = 0; i < selectElems.length; i++) {
+				if (selectElems[i].length == 0)
+					$(selectElems[i]).hide();
+			}
+		}
+		if (!blnKeepPrevValDftT) {
+			selectElems.empty();
+		}
+		return;
+	}
+	;
+
+	// 申明记录填充前状况的数组，每个数组的长度应与selectElems的长度严格一致，否则还原时可能张冠李戴
+	// 针对每个select元素，均保留其原来的value和text，以数组形式保存
+	// 针对每个select元素，均保留其原来的options的完整内容以及对应每个option的value，以数组形式保存
+	var originalValue = []; // 记录每个select元素当前value的数组
+	var originalText = []; // 记录每个select元素当前text的数组
+	var orgOptions = []; // 记录原始optionHTML内容的数组
+	var orgOptValues = []; // 记录原始option的value值的数组
+	var orgPlaceHolder = ''; // 记录原始placeholder的字符变量
+	if (blnKeepPrevValDftT || blnKeepOrgOptDftF) {
+		for (i = 0; i < selectElems.length; i++) {
+			var orgOpts = $.trim(selectElems[i].innerHTML);
+			// 先根据options的内容确定需要记录的value值
+			// 如果select元素已经选中（包含选中options的value=""的占位符），则如实记录val和text
+			if (selectElems[i].selectedIndex != -1) {
+				originalValue.push(selectElems[i].value);
+				originalText
+						.push(selectElems[i].options[selectElems[i].selectedIndex].text);
+				if (!selectElems[i].value)
+					orgPlaceHolder = selectElems[i].options[selectElems[i].selectedIndex].text;
+			} else {
+				// 否则以字符串null做为值便于后面的判断
+				originalValue.push('null');
+				originalText.push('null');
+			}
+
+			// select元素的起始options是否value=""的空值，如果是，则要将该option剔除，避免回填的时候重复填入value=""的option
+			if (orgOpts.indexOf('<option value=""') == 0) {
+				orgOpts = orgOpts.substring(orgOpts.indexOf('</option>') + 9,
+						orgOpts.length);
+			}
+			if (orgOpts) {
+				var arrOrgOptVals = orgOpts.split('</option>');
+				// split函数后，数组的最后一个成员多余的空值，并且比实际select的options数量多一个，因此需要删除
+				// 数组为空时，pop函数不改变数组，并返回undefined值，这里不关心返回值，仅使用删除数组最后一个成员的功能。
+				arrOrgOptVals.pop();
+				for (var j = 0; j < arrOrgOptVals.length; j++) {
+					var val = arrOrgOptVals[j];
+					val = val.substring(val.indexOf('value="') + 7, val.length);
+					val = val.substring(0, val.indexOf('"'));
+					arrOrgOptVals[j] = val;
+				}
+				orgOptValues.push(arrOrgOptVals.join(','));
+				orgOptions.push(orgOpts);
+			} else {
+				// 如果select元素原本没有options或者options仅含value=""的option，则以字符null作为options进行记录，避免后续填入无用的空option。
+				orgOptValues.push('null');
+				orgOptions.push('null');
+			}
+		}
+	}
+
+	// empty()是清除child elements。
+	$(objFillInElems).empty();
+
+	var optGroupLabel = '';
+	var optionString = '';
+	for (i = 0; i < options.length; i++) {
+		var ops = options[i].split('^');
+		var idxInOrgOpt = 0;
+		// 检测新填入的option是否与原来的option有重复，如果有，则删除原来的option
+		for (j = 0; j < orgOptions.length; j++) {
+			idxInOrgOpt = -1;
+			if (orgOptValues[j]) {
+				arrOrgOptVals = orgOptValues[j].split(',');
+				idxInOrgOpt = $.inArray(ops[0], arrOrgOptVals);
+			}
+			if (idxInOrgOpt != -1) {
+				var tmpOrgOpts = orgOptions[j].split('</option>');
+				tmpOrgOpts.splice(idxInOrgOpt, 1);
+				orgOptions[j] = tmpOrgOpts.join('</option>');
+			}
+		}
+		if (blnFillInOptGroupDftF) {
+			// 填入options分组信息，分组信息需形成在opt数组的第3位，如该位undefined或者该位和第2位内容一样，则不填入
+			if (ops[2] != optGroupLabel && ops[2]) {
+				if (optGroupLabel == '') {
+					optionString = '<optgroup label="' + ops[2] + '">';
+				} else {
+					optionString += '</optgroup>';
+					optionString += '<optgroup label="' + ops[2] + '">';
+				}
+				optGroupLabel = ops[2];
+			}
+		}
+		if (ops.length == 1) {
+			optionString += '<option value="' + ops[0] + '">' + ops[0]
+					+ '</option>';
+		} else if (ops.length == 3) {
+			optionString += '<option mytag="' + ops[2] + '" value="' + ops[0]
+					+ '">' + ops[1] + '</option>';
+		} else if (ops.length > 3) {
+			// 增加对ops数组第4位之后信息的处理，处理方式为，将第4位之后的内容合并为一个字符串
+			var strForMyTag1 = '';
+			for (var x = 3; x < ops.length; x++) {
+				strForMyTag1 += ops[x] + '~';
+			}
+			strForMyTag1 = strForMyTag1.substring(0, strForMyTag1.length - 1);
+			optionString += '<option mytag1="' + strForMyTag1 + '" mytag="'
+					+ ops[2] + '" value="' + ops[0] + '">' + ops[1]
+					+ '</option>';
+		} else {
+			// 针对后台数据可能返回提示信息而不是用于选择的选项，进行特殊处理，将该option设置为不可选择工程
+			// 提示信息的标志为：value字段为NA
+			if (ops[0] == 'NA' || ops[0] == 'na') {
+				optionString += '<option disabled class="disabled-temporary" value="'
+						+ ops[0] + '">' + ops[1] + '</option>';
+			} else {
+				optionString += '<option value="' + ops[0] + '">' + ops[1]
+						+ '</option>';
+			}
+		}
+	}
+	;
+
+	for (i = 0; i < selectElems.length; i++) {
+		var fillInOptions = optionString;
+		if (blnKeepOrgOptDftF && orgOptions[i] != 'null') {
+			fillInOptions = orgOptions[i] + optionString;
+		}
+		selectElems[i].innerHTML = fillInOptions;
+		var emptyValOpt = ''; // 根据元素的class，判定空值option的内容
+		if ($(selectElems[i]).hasClass('not-empty')) {
+			if (orgPlaceHolder) {
+				emptyValOpt = '<option value="" disabled selected style="display:none">'
+						+ orgPlaceHolder + '</option>';
+			} else {
+				emptyValOpt = '<option value="" disabled selected style="display:none">必选项</option>';
+			}
+		} else {
+			if (orgPlaceHolder) {
+				emptyValOpt = '<option value="">' + orgPlaceHolder
+						+ '</option>';
+			} else {
+				emptyValOpt = '<option value=""></option>';
+			}
+		}
+		// 根据传入参数，决定是否填入空值参数
+		// 填入条件：非空options的数量 >1 AND (强制填入空值option的参数未定义 OR )
+		if ((blnBlankFirstDftU == undefined && $(selectElems[i]).find('option').length > 1)
+				|| blnBlankFirstDftU) {
+			selectElems[i].innerHTML = emptyValOpt + selectElems[i].innerHTML;
+		}
+
+		if (blnKeepPrevValDftT && originalValue.length > 0) {
+			var oldValue = originalValue.shift();
+			var oldText = originalText.shift();
+			if (oldValue != 'null') {
+				// 原值为空字符，且原始记录了placeHoder字符的内容，则认为原select元素没有进行选择，保留了placeholder状态，
+				// 这是，检查placeholder占位的option是否填入，如果没有，则照原样插入占位option
+				if (!oldValue
+						&& orgPlaceHolder
+						&& $(selectElems[i]).find('option[value=""]').length == 0) {
+					selectElems[i].innerHTML = emptyValOpt
+							+ selectElems[i].innerHTML;
+					// 其他情况，则判断原始的选中value和text是否已经作为option插入，如果没有，则插入到options的最后位置
+				} else if ($(selectElems[i]).find(
+						'option[value="' + oldValue + '"]').length == 0) {
+					selectElems[i].innerHTML += "<option value=\"" + oldValue
+							+ "\">" + oldText + "</option>";
+				}
+				// 如果原始选中有值，则仅填入原始值，不触发change事件
+				selectElems[i].value = oldValue;
+			} else {
+				$(selectElems[i]).trigger('change');
+			}
+		} else {
+			$(selectElems[i]).trigger('change');
+		}
+		$(selectElems[i]).trigger('troggle-placeholder-color');
+	}
+};
+
+
+/*
  * 将页面element的name和value转换为name:value格式的js Object
  * jQuery的ajax函数支持以上形式的object作为post参数， 也支持
  * {name=name1,value=value1;name=name2,value=value2;....}形式的post参数 还支持

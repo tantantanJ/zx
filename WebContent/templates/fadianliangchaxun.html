@@ -45,22 +45,6 @@
     	<input class="col-sm-8 content-label not-empty showText" name="wuliaomingcheng" onfocus=this.blur() />
     </div>
 </div>
-<div class="need-space row">
-	<div class="col-sm-12" style="padding-left:10px;">	
-		<label class="col-sm-2 title">发电量(万度)：</label>
-		<input class="col-sm-10 ui-widget-content ui-corner-all not-empty" id="FaDianLiang" name="fadianliang" type="text" onkeyup="this.value = (Math.round(parseFloat(this.value)*100)/100)?(Math.round(parseFloat(this.value)*100)/100):0;"/>
-	</div>
-</div>
-<div class="need-space row">
-	<div class="col-sm-6">	
-		<label class="col-sm-4 title">单价(元)：</label>
-		<input class="col-sm-8 ui-widget-content ui-corner-all not-empty" name="danjia" id="DanJia" type="text" onkeyup="this.value = Math.round(parseFloat(this.value)*100)/100;" onblur="this.value = currencyFormatted(this.value, true, '');" onfocus="this.value = currencyUnformat(this.value, true, '');"/>
-	</div>
-	<div class="col-sm-6">
-		<label class="col-sm-4 title isLabelShow">金额(元)：</label>
-		<input class="col-sm-8 ui-widget-content ui-corner-all showText" name="jine" id="JinE" type="text" disabled = 'true'/>
-	</div>
-</div>
 <input name="yewudanyuan" style="display:none"></input>
 <input name="shengchanbumen" style="display:none"></input>
 <input name="lururen" style="display:none"></input>

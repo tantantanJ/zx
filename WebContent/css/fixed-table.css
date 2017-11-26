@@ -55,14 +55,15 @@ body{
     width: auto;
 }
 .fixed-table-box table{
-    background-color: #fff;
+    background: none repeat scroll 0 0 #F9F9F9;
     border: 0;
 }
 .fixed-table-box th,
 .fixed-table-box td{
     position: relative;
-    text-align: left;
+    text-align: right;
     padding: 5px 0;
+    padding-right: 16px;
     border: 1px solid #dfe6ec;
 }
 .fixed-table-box .table-cell{
@@ -86,7 +87,16 @@ body{
     width: 100%;
 }
 .fixed-table-box .fixed-table_header tr{
-    background-color: #eef1f6;
+    text-align: center !important;
+    padding: 10px 0 !important;
+ 	/* background-color: #efefef; */
+    /* background-image: -webkit-gradient(linear, 0 0%, 0 100%, from(#fdfdfd), to(#eaeaea)); */
+    background-image: -webkit-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
+    background-image: -moz-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
+    background-image: -ms-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
+    background-image: -o-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
+    background-image: -linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fdfdfd', endColorstr='#eaeaea',GradientType=0 );
 }
 .fixed-table-box .fixed-table_header th{
     color: #1f2d3d;
@@ -150,6 +160,9 @@ body{
     /* border-left: 1px solid #dfe6ec\0; */
 /*     box-shadow: -2px -1px 8px 1px #d3d4d6; */
 }
+.fixed-table_fixed-right th{
+    border-left: 1px solid #dfe6ec !important;
+}
 .fixed-table_fixed .fixed-table_header-wraper,
 .fixed-table_fixed .fixed-table_body-wraper{
     overflow-y: hidden;
@@ -167,7 +180,6 @@ body{
 
 .fixed-table-box_fixed-right-patch{
     /*右上角的遮罩，如果少了这块在右边有固定列并且表格内容右侧有滚动条时会出现镂空的效果*/
-    background-color: #eef1f6;
     position: absolute;
     top: 0;
     right: 0;
